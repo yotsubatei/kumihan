@@ -1,0 +1,18 @@
+{
+  "name": "kumihan",
+  "version": "0.1.0",
+  "description": "AI（Claude Code）とVivliostyleで日本語の本を作るスキル集。本の立ち上げ、修正依頼から確認版まで、電子書籍（Kindle）対応。縦書き・横書きの両方に使える。",
+  "author": {
+    "name": "亖葉"
+  },
+  "license": "MIT",
+  "keywords": [
+    "vivliostyle",
+    "組版",
+    "日本語",
+    "縦書き",
+    "EPUB",
+    "Kindle",
+    "KDP"
+  ]
+}

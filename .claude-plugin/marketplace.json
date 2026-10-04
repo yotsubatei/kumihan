@@ -1,0 +1,14 @@
+{
+  "name": "kumihan-kit",
+  "description": "日本語の本をAI（Claude Code）とVivliostyleで作る為のプラグイン",
+  "owner": {
+    "name": "亖葉"
+  },
+  "plugins": [
+    {
+      "name": "kumihan",
+      "source": "./",
+      "description": "AI（Claude Code）とVivliostyleで日本語の本を作るスキル集。本の立ち上げ、修正依頼から確認版まで、電子書籍（Kindle）対応。"
+    }
+  ]
+}

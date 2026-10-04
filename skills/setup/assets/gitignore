@@ -1,0 +1,10 @@
+node_modules/
+.vivliostyle/
+.DS_Store
+__pycache__/
+
+# 作業用のビルド成果物（原稿から作り直せる）。
+# 著者に渡した版は releases/<日付>/ に入れて記録する
+/{{SLUG}}.pdf
+/{{SLUG}}.epub
+/*.kpf

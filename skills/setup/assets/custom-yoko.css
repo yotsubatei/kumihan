@@ -1,0 +1,61 @@
+/* この本独自のスタイル（横書き）。テーマ（theme-techbook）の上に重ねる。
+   このCSSは紙の本（PDF）と電子書籍（EPUB）で共有する。紙のページの大きさを
+   前提にした値（pt固定の位置・幅、ページ中央への配置等）は @media print の中に書く。 */
+
+/* 書体。SIL Open Font License の Noto を、太さごとの静的なOTFで使う。
+   fonts/ の書体は prebuild で .vivliostyle/themes/fonts/ へコピーされ、
+   PDF・EPUBの両方に埋め込まれる。名前は、パソコンに入っている同名の書体と
+   取り違えないよう、独自の名前で登録する */
+@font-face {
+  font-family: 'KMNotoSerifJP';
+  src: url('themes/fonts/NotoSerifJP-Regular.otf');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'KMNotoSerifJP';
+  src: url('themes/fonts/NotoSerifJP-Bold.otf');
+  font-weight: 700;
+}
+@font-face {
+  font-family: 'KMNotoSansJP';
+  src: url('themes/fonts/NotoSansJP-Regular.otf');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'KMNotoSansJP';
+  src: url('themes/fonts/NotoSansJP-Bold.otf');
+  font-weight: 700;
+}
+
+:root {
+  /* 本文は明朝、見出しはゴシック */
+  --vs-font-family: 'KMNotoSerifJP', serif;
+  --vs--heading-font-family: 'KMNotoSansJP', sans-serif;
+  /* 紙の本の本文の文字サイズ（電子書籍は読者が大きさを変えられる為、印刷用のみ） */
+  --vs-font-size-on-print: {{FONT_SIZE}};
+  /* 段落の頭を1字下げ、段落の間は空けない（日本の書籍の標準の形。
+     テーマ既定の「字下げ無し・段落の間を1行空ける」はウェブの記事の形） */
+  --vs--p-text-indent: 1em;
+  --vs--p-margin-block: 0;
+}
+
+/* 行末を揃えない。均等に揃えると、行頭に来る長い英単語の手前の行の字間が
+   大きく広がる。日本語だけの行は行末まで埋まる為、見た目はほぼ変わらない */
+p {
+  text-align: start;
+}
+
+/* 見出しの折り返しで、末尾の1文字だけが次の行に送られるのを避ける */
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+/* 図版のキャプションを中央に。テーマは図の flex（align-items: center）で中央に
+   置いているが、Kindleは flex を解釈せず、図を画像の幅に縮めてキャプションを左に
+   寄せる。図の幅を100%にし、キャプションの揃えも直接指定する */
+figure {
+  width: 100%;
+}
+figure figcaption {
+  text-align: center;
+}

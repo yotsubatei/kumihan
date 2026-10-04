@@ -1,0 +1,76 @@
+/* この本独自のスタイル（縦書き）。テーマ（theme-bunko）の上に重ねる。
+   このCSSは紙の本（PDF）と電子書籍（EPUB）で共有する。紙のページの大きさを
+   前提にした値（pt固定の位置・幅、ページ中央への配置等）は @media print の中に書く。 */
+
+/* 書体。SIL Open Font License の Noto を、太さごとの静的なOTFで使う。
+   fonts/ の書体は prebuild で .vivliostyle/themes/fonts/ へコピーされ、
+   PDF・EPUBの両方に埋め込まれる。名前は、パソコンに入っている同名の書体と
+   取り違えないよう、独自の名前で登録する */
+@font-face {
+  font-family: 'KMNotoSerifJP';
+  src: url('themes/fonts/NotoSerifJP-Regular.otf');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'KMNotoSerifJP';
+  src: url('themes/fonts/NotoSerifJP-Bold.otf');
+  font-weight: 700;
+}
+@font-face {
+  font-family: 'KMNotoSansJP';
+  src: url('themes/fonts/NotoSansJP-Regular.otf');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'KMNotoSansJP';
+  src: url('themes/fonts/NotoSansJP-Bold.otf');
+  font-weight: 700;
+}
+
+/* 縦書き。テーマは var() 経由で指定しているが、Kindleは var() を解釈しない為、
+   直接書き直す。-epub-writing-mode も書かないと、Kindleでは横書きになる */
+html {
+  -epub-writing-mode: vertical-rl;
+  writing-mode: vertical-rl;
+}
+
+:root {
+  --vs-font-family: 'KMNotoSerifJP', serif;
+  /* 縦書きの本は見出しも明朝が多い。ゴシックにする時は 'KMNotoSansJP' */
+  --vs--heading-font-family: 'KMNotoSerifJP', serif;
+  /* 本文の文字サイズ。theme-bunko は印刷用の大きさを % で上書きしている為、
+     両方を指定する */
+  --vs-font-size: {{FONT_SIZE}};
+  --vs-font-size-on-print: {{FONT_SIZE}};
+  /* 行間（縦書きでは行と行の左右の間隔） */
+  --vs-line-height: 1.8;
+  /* 段落の頭を1字下げ、段落の間は空けない（日本の書籍の標準の形） */
+  --vs--p-text-indent: 1em;
+  --vs--p-margin-block: 0;
+  /* theme-bunko は見出しの左右の余白が0になる為、少し空ける */
+  --vs--heading-margin-block: 0.75rem;
+  /* 章（h1）は奇数ページ（本を開いた時の表側のページ）から始める。縦書き（右綴じ）では
+     奇数ページは左側にある。right を指定すると、右綴じでは偶数ページになるので注意。
+     recto は「表側のページ」を指し、右綴じでも左綴じでも奇数ページになる */
+  --vs-section--h1-break-before: recto;
+  /* 柱（章の名前）とノンブル（ページ番号） */
+  --vs-theme--page-top-left-content: env(doc-title);
+  --vs-theme--page-top-right-content: env(doc-title);
+  --vs-page--mbox-content-bottom-center: counter(page);
+}
+
+/* 見出しは天（ページの上）から書き始める。縦書きでは text-align が天地の揃えに
+   なる為、center にすると天地の中央に寄ってしまう */
+h1, h2, h3, h4, h5, h6 {
+  text-align: start;
+}
+
+/* 図版のキャプションを中央に。テーマは図の flex（align-items: center）で中央に
+   置いているが、Kindleは flex を解釈せず、図を画像の幅に縮めてキャプションを左に
+   寄せる。図の幅を100%にし、キャプションの揃えも直接指定する */
+figure {
+  width: 100%;
+}
+figure figcaption {
+  text-align: center;
+}
