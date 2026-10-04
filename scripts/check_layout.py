@@ -126,7 +126,8 @@ def main():
                 and prev_tail and prev_tail["kind"] != "heading" and prev_tail["full"]):
             found.append((label, "段落の泣き別れ（ページの頭）", f"前のページから続く段落の最後の1行「{head['text'][:20]}」だけがページの頭にある"))
         # ページの終わりが、段落の最初の1行（字下げで始まり、行末まで埋まっていて次へ続く）
-        if tail["kind"] == "first" and tail["full"] and nxt:
+        # （「。」「」」等で終わる行は、1行で完結した段落なので除く）
+        if tail["kind"] == "first" and tail["full"] and nxt and not tail["text"].endswith(("。", "」", "』", "）", "：")):
             found.append((label, "段落の泣き別れ（ページの終わり）", f"段落の最初の1行「{tail['text'][:20]}」だけがページの終わりにある"))
         # 段落の最後の行が1〜2文字（前の行が行末まで埋まった続きの行）
         for k in range(1, len(lines)):
