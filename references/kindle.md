@@ -17,6 +17,8 @@ Kindleの変換エンジン（KDP・Kindle Previewer）が解釈しないCSSは�
 | 書式が全体に崩れる、Previewerで Enhanced Typesetting が Not Supported | 表紙画像が WebP・空・無効 | `epub_cover_image.py`（PDFの1ページ目をJPEGにする） |
 | 表紙が2回続けて出る | 表紙ページが本文の流れ（spine）に入っている | 表紙ページの `itemref` に `linear="no"`（`epub_cover_image.py` が行う） |
 | 図版のキャプションが中央ではなく左に寄る | Kindleは図（`figure`）を画像の幅に縮めて組み、キャプションをその中で左に置く。テーマはキャプションの中央寄せを `display: flex` に頼っていて、Kindleは flex を解釈しない。キャプションに `text-align: center` を付けるだけでは直らない（Kindle Previewerで確認） | `figure { width: 100%; }` を指定する（紙のPDFで図の大きさが変わる場合は `@media print { figure { width: auto; } }` で戻す）。あわせて `figure figcaption { text-align: center; }` |
+| Kindleの目次の一覧で、見出しの読みが語の後ろに続いて出る（「組版くみはん」） | 見出しに振ったルビが、ナビゲーションの目次（nav）に写る | `epub_toc_plain.py`（目次の中のルビの読みを外す） |
+| 表紙ページが本文のPDFの1ページ目に入る | Vivliostyleの設定の `cover` は、表紙のHTMLのページも作る | `cover: { src: "images/kindle-cover.jpg", htmlPath: false }`（表紙画像だけを入れる。紙の表紙は別に入稿する）。表紙画像は原稿のフォルダ（entryContext）の中に置く |
 | 縦中横で警告が出る | `text-combine-upright: all` の中が5文字以上（`::before` の中身も数える） | 縦中横にする範囲を、数字だけの `<span>` に絞る |
 | 紙の本用の幅・位置の指定で、電子書籍の表示が崩れる | pt固定の幅・位置、`inline-size`、ページ中央への配置 | `@media print { … }` の中に書く（電子書籍リーダーは使わない） |
 | 縦書きで、要素が天地いっぱいに伸びる | `display: block` は `inline-size` を外しても天地方向に伸びる | 電子書籍側は `display: inline-block` |
@@ -25,7 +27,7 @@ Kindleの変換エンジン（KDP・Kindle Previewer）が解釈しないCSSは�
 ## 後処理の順番
 
 ```
-epub_split_selectors → epub_resolve_css_vars → epub_physical_props → （本ごとの後処理） → epub_subset_fonts → epub_cover_image
+epub_split_selectors → epub_resolve_css_vars → epub_physical_props → （本ごとの後処理） → epub_subset_fonts → epub_toc_plain → epub_cover_image
 ```
 
 - 書体の絞り込みは、本文を書き換える後処理（約物を囲む等）より後に。文字を数え直す為。

@@ -35,6 +35,9 @@
   --vs-font-size-on-print: {{FONT_SIZE}};
   /* 段落の頭を1字下げ、段落の間は空けない（日本の書籍の標準の形。
      テーマ既定の「字下げ無し・段落の間を1行空ける」はウェブの記事の形） */
+  /* 柱（ページの上の書名・章の名前）とノンブルは、明朝ではなくゴシックに。
+     明朝のままだと、ゴシックの見出しと並んだ時に浮いて見える */
+  --vs-page--mbox-font-family: 'KMNotoSansJP', sans-serif;
   --vs--p-text-indent: 1em;
   --vs--p-margin-block: 0;
 }
@@ -58,4 +61,28 @@ figure {
 }
 figure figcaption {
   text-align: center;
+}
+
+/* 見出し・表の折り返しは、文節の切れ目で（「ノン／ブル」「人がするこ／と」のように
+   語の途中で切れないように） */
+h1, h2, h3, h4, h5, h6, table {
+  word-break: auto-phrase;
+}
+/* 中身が短い列（番号・章・「同じ」等）は折り返さない。原稿の表のセルを
+   <span class="nw"> で囲む（tools/kumihan-kit/table_nowrap.py が付ける）。
+   付けないと、狭い列で「第／16／章」のように1文字ずつ縦に並ぶ */
+.nw {
+  white-space: nowrap;
+}
+/* 表・図の説明は、本文が明朝でもゴシックの方が読みやすい（英語の項目名が浮かない） */
+table, figcaption {
+  font-family: 'KMNotoSansJP', sans-serif;
+}
+/* 章の見出しのルビは小さめに（1字の親文字に長い読みが付いても、題名の折り返しが変わらない） */
+h1 rt {
+  font-size: 0.33em;
+}
+/* 見出しに振ったルビは、目次では出さない（電子書籍の目次は epub_toc_plain.py で外す） */
+nav#toc rt {
+  display: none;
 }

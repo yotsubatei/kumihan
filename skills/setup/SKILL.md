@@ -52,7 +52,7 @@ Pythonの追加の部品（PyMuPDF・fontTools・python-docx 等）は、シス�
   .gitignore              ← assets/gitignore
   draft/                  ← 原稿（VFM）。assets/draft/ の見本から始める
   fonts/                  ← 書体（下記）
-  original-text/          ← 著者から届いた原稿・修正依頼を、届いた日付ごとにそのまま保存
+  received/               ← 著者から届いた原稿・修正依頼を、届いた日付ごとにそのまま保存
   releases/               ← 著者に渡す確認版を、日付ごとに保存
   tools/kumihan-kit/      ← SKILL_DIR/../../scripts/ をコピー
 ```
@@ -122,3 +122,5 @@ npm run build
 - 縦書きの本は、`html` に `writing-mode` と `-epub-writing-mode` の**両方**を書く（雛形にある）。片方だとKindleで横書きになる。
 - 縦書きでは、上下左右の向きの言葉が入れ替わる（`margin-block-start` は右、`text-align` は天地の揃え）。`SKILL_DIR/../../references/japanese-typesetting.md` を参照。
 - 原稿の記法（ルビ・圏点・縦中横・改ページ）は、最初に決めて `CLAUDE.md` に書く。途中で変えると、原稿全体を書き換える事になる。
+- 表の中にルビを振る時は `{漢字|よみ}` ではなく `<ruby>` で書く（縦棒が表の列の区切りとぶつかる）。表を足したら `table_nowrap.py` を通す。
+- 表紙は、本文のページ数が固まってから仕上げる（背の幅がページ数で変わる）。作り方は `SKILL_DIR/../../references/cover.md`。

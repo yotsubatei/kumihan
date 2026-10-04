@@ -19,7 +19,7 @@ Claude Code のプラグイン（`kumihan`）として、本作りの手順を�
 /plugin install kumihan@kumihan-kit
 ```
 
-スキルは頼み方（「本を作りたい」「著者から修正依頼が来ました」「Kindleで縦書きにならない」等）に応じて自動で使われます。共通の知識は `references/`（`kindle.md`：Kindleで崩れる原因と直し方、`japanese-typesetting.md`：日本語組版の要点）にあります。
+スキルは頼み方（「本を作りたい」「著者から修正依頼が来ました」「Kindleで縦書きにならない」等）に応じて自動で使われます。共通の知識は `references/`（`kindle.md`：Kindleで崩れる原因と直し方、`japanese-typesetting.md`：日本語組版の要点、`cover.md`：ペーパーバックとKindleの表紙の作り方）にあります。
 
 ## 道具
 
@@ -35,6 +35,9 @@ Claude Code のプラグイン（`kumihan`）として、本作りの手順を�
 | `scripts/pdf_diff_pages.py` | 新旧のPDFを1ページずつ画像で比べ、見た目の変わったページを通し番号とノンブルで一覧にする（`--out` で旧｜新を並べた画像）。依存: PyMuPDF |
 | `scripts/check_layout.py` | 出来上がったPDFから、泣き別れの候補（見出しがページの最後に残る、段落の1行だけがページの頭・終わりに分かれる、段落の最後の行が1〜2文字だけ）を、ページ番号付きで一覧にする。縦書き・横書きの両方。依存: PyMuPDF |
 | `scripts/unzip_ja.py` | Windowsで作られたZIPを、日本語のファイル名が化けないように展開する |
+| `scripts/epub_toc_plain.py` | EPUBのナビゲーション目次から、見出しに振ったルビの読みを外す。Kindleの目次の一覧で「組版くみはん」のように読みが続いて出るのを防ぐ |
+| `scripts/table_nowrap.py` | 原稿の表で、中身がすべて短い列（番号・章等）のセルを `<span class="nw">` で囲み、折り返さないようにする。狭い列で「第／16／章」のように1文字ずつ縦に並ぶのを防ぐ（CSSの `.nw { white-space: nowrap }` と組で使う） |
+| `scripts/add_ruby.py` | 原稿の読みにくい語に、章ごとの初出だけルビを振る。出版・組版・校正の用語を既定で持ち、本ごとの語は TSV で足せる。コード・HTMLの属性・既にあるルビには振らない |
 | `scripts/check_ruby_syntax.py` | 原稿のルビ（`{漢字\|よみ}`）が変換されない書き方（生HTMLの段落の中、見出しの直後、二重ルビ）になっていないかを検査する。ビルドの前処理に入れる |
 
 EPUBを書き換える後処理（`epub_*.py`）は、いずれもEPUBだけを書き換え、PDFには手を加えません。
