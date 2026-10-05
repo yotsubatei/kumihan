@@ -148,6 +148,8 @@ def process(text):
     parts = PROTECT.split(text)   # 偶数番目が地の文、奇数番目が守る部分
     done = []
     for term, rep, ng in sorted(TERMS, key=lambda t: -len(t[0])):
+        if rep in text:   # この章で既に振ってある語は、もう振らない（2回目に実行した時の重複を防ぐ）
+            continue
         pat = re.compile((f"(?<![{re.escape(ng)}])" if ng else "") + re.escape(term))
         for i in range(0, len(parts), 2):
             m = pat.search(parts[i])

@@ -38,6 +38,8 @@ Claude Code のプラグイン（`kumihan`）として、本作りの手順を�
 | `scripts/epub_toc_plain.py` | EPUBのナビゲーション目次から、見出しに振ったルビの読みを外す。Kindleの目次の一覧で「組版くみはん」のように読みが続いて出るのを防ぐ |
 | `scripts/table_nowrap.py` | 原稿の表で、中身がすべて短い列（番号・章等）のセルを `<span class="nw">` で囲み、折り返さないようにする。狭い列で「第／16／章」のように1文字ずつ縦に並ぶのを防ぐ（CSSの `.nw { white-space: nowrap }` と組で使う） |
 | `scripts/add_ruby.py` | 原稿の読みにくい語に、章ごとの初出だけルビを振る。出版・組版・校正の用語を既定で持ち、本ごとの語は TSV で足せる。コード・HTMLの属性・既にあるルビには振らない |
+| `scripts/epub_ascii_names.py` | EPUBの中の日本語のファイル名と、manifest のIDを英数字にする。KDPのサーバーの変換が、日本語のファイル名・IDで失敗する（プレビューで変換エラー、保存できない）のを防ぐ |
+| `scripts/font_add_vertical_metrics.py` | 縦書きの字の位置の情報（vhea・vmtx）が無い書体（外字の書体等）に、それを足した複製を作る。Kindleで外字が縦書きの枠の上に寄るのを防ぐ |
 | `scripts/check_ruby_syntax.py` | 原稿のルビ（`{漢字\|よみ}`）が変換されない書き方（生HTMLの段落の中、見出しの直後、二重ルビ）になっていないかを検査する。ビルドの前処理に入れる |
 
 EPUBを書き換える後処理（`epub_*.py`）は、いずれもEPUBだけを書き換え、PDFには手を加えません。
