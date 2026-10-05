@@ -21,6 +21,9 @@ Kindleの変換エンジン（KDP・Kindle Previewer）が解釈しないCSSは�
 | 表紙ページが本文のPDFの1ページ目に入る | Vivliostyleの設定の `cover` は、表紙のHTMLのページも作る | `cover: { src: "images/kindle-cover.jpg", htmlPath: false }`（表紙画像だけを入れる。紙の表紙は別に入稿する）。表紙画像は原稿のフォルダ（entryContext）の中に置く |
 | 外字（自作の書体の字）が、縦書きで字の枠の上の方に寄る（例：「」の中の小さな点が上に寄る） | 外字の書体（Windowsの外字エディタの EUDC 等）に、縦書きの字の位置の情報（vhea・vmtx）が無い。Chrome（PDF）は横書きの位置を元に中央に置くが、Kindle は字の上端を枠の上端に寄せる | `font_add_vertical_metrics.py` で縦書きの情報を足した書体を作って使う（PDFの見た目はほぼ変わらない） |
 | KDPにEPUBを上げると、アップロードはできるが、プレビューで変換エラー。保存もできない（変換ログのダウンロードも反応しない事がある） | EPUBの中の画像のファイル名や、manifest のIDが日本語（Vivliostyle は日本語のファイル名から日本語のIDを作る）。epubcheck・Kindle Previewer は通るので気づきにくい。KDPのページの言語と、EPUBの dc:language の食い違いでも起きる | `epub_ascii_names.py`（ファイル名とIDを英数字に）。KDPの言語は「日本語」に。KPF ではなく EPUB を上げる（KDPのKPFの入稿口は Kindle Create で作った物を想定）。変換ログが落とせない時は、別のブラウザでポップアップ・ダウンロードを許可して試す |
+| KDPに上げると「目次に壊れているリンクがあります」。Kindle Previewer では「W14001: ハイパーリンクは解決されていません」（`toc.xhtml#toc` 等） | (1) 見出しのIDが日本語（Vivliostyle は見出しの文字からIDを作る）で、目次のリンクが %エンコードされている。epubcheck は通るが、KDPは解決できない。(2) ランドマークの目次へのリンクが nav の id（`#toc`）を指していて、Kindleの変換で nav が取り除かれると行き先が無くなる | (1) `epub_ascii_names.py`（本文のIDも h-001 等に）。(2) `epub_toc_plain.py`（ランドマークのリンクをファイルへのリンクに）。Kindle Previewer の変換ログで W14001・W14002 が0件になる事を確かめる |
+| KDPで「Kindle 変換で内部エラーが発生しました」（epubcheck も Kindle Previewer も通る。注意も0件） | **Vivliostyle のテーマの書式の、書字方向の解除と段組の指定。** theme-base の basic.css は、html に `columns: 1; column-fill: balance; column-gap`、引用・図・コード・表に `writing-mode: unset`（変数経由）を指定する。本文が少ないと通り、増える（図・表・コードが増える）と落ちる。2冊で確認し、試験用の下書きに1つずつ外して上げて突き止めた（書体・var()・:is()・改ページ・SVG・ファイル名は原因ではなかった） | `epub_kindle_safe_css.py`（変数の解決の後に）。原因が書かれない内部エラーは、KDPで試験用の下書きを作り、書式あり・なし、本文の半分、書式のファイルの半分…と二分して上げると数回で特定できる。小さな pandoc のEPUBが通るかで、KDP側の不具合かも分かる |
+| KDPで「HTMLファイルをKindleフォーマットに変換できませんでした。ファイルの構造が適切であることを確認してください」 | 本文にフォームの部品がある。Markdown のチェックリスト（`- [ ] 項目`）は `<input type="checkbox">` になる。epubcheck・Kindle Previewer は通る | `epub_strip_forms.py`（チェックボックスを文字の ☐ に） |
 | 縦中横で警告が出る | `text-combine-upright: all` の中が5文字以上（`::before` の中身も数える） | 縦中横にする範囲を、数字だけの `<span>` に絞る |
 | 紙の本用の幅・位置の指定で、電子書籍の表示が崩れる | pt固定の幅・位置、`inline-size`、ページ中央への配置 | `@media print { … }` の中に書く（電子書籍リーダーは使わない） |
 | 縦書きで、要素が天地いっぱいに伸びる | `display: block` は `inline-size` を外しても天地方向に伸びる | 電子書籍側は `display: inline-block` |
@@ -29,7 +32,7 @@ Kindleの変換エンジン（KDP・Kindle Previewer）が解釈しないCSSは�
 ## 後処理の順番
 
 ```
-epub_split_selectors → epub_resolve_css_vars → epub_physical_props → （本ごとの後処理） → epub_ascii_names → epub_subset_fonts → epub_toc_plain → epub_cover_image
+epub_flatten_css → epub_split_selectors → epub_resolve_css_vars → epub_physical_props → epub_kindle_safe_css → （本ごとの後処理） → epub_ascii_names → epub_subset_fonts → epub_toc_plain → epub_cover_image
 ```
 
 - 書体の絞り込みは、本文を書き換える後処理（約物を囲む等）より後に。文字を数え直す為。
@@ -40,6 +43,6 @@ epub_split_selectors → epub_resolve_css_vars → epub_physical_props → （�
 - **見た目の修正は、Kindle Previewerの画面で実際に見る。** ブラウザでの模擬や変換の成否だけでは見落とす（キャプションの件で実際に見落とした）。確かめたいページだけを本文の先頭に置いた試験用EPUB（content.opf の spine の最初に足す）を作ると、すぐに表示を確かめられる。
 
 - **Kindle Previewer の画面を撮る時**：画面にキー入力やクリックを送らない（窓の前後が入れ替わると、別のアプリに入力してしまう）。`open -g -a "Kindle Previewer 4" <KPF>` で裏で開き、窓の番号（Swift の `CGWindowListCopyWindowInfo` で取れる）を指定して `screencapture -x -o -l <番号>` で窓だけを撮る。確かめたいページだけを本文にした試験用の本（他の章の itemref を `linear="no"`、書名も変えて前回の表示位置を引き継がない）にすると、開いた最初の画面に出る。
-- **Kindle Previewer**：`KindlePreviewer4CLI <epub> --convert --output <dir> --locale ja`。ログで Enhanced Typesetting の可否と警告を見る。`--showpreview` で画面表示。
+- **Kindle Previewer**（ログの「注意」も読む。W14001 等のリンクの警告は、KDPではエラーになる事がある）：`KindlePreviewer4CLI <epub> --convert --output <dir> --locale ja`。ログで Enhanced Typesetting の可否と警告を見る。`--showpreview` で画面表示。
 - **ブラウザでの近似**：EPUBを展開し、ヘッドレスChromeでXHTMLを撮影する。Kindleを模擬するには、CSSから `var()` と論理プロパティを含む宣言を取り除いた版を撮影して、元と比べる（それでも同じ見た目なら、Kindleでも崩れにくい）。縦書きは右から左へ横に伸びる為、長い章は空白になる。問題の箇所だけを抜き出した小さなXHTMLで撮る。
 - **実機**：Send to Kindle でEPUBを送り、Kindleアプリで開く。

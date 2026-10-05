@@ -6,9 +6,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "prebuild": "python3 tools/kumihan-kit/check_ruby_syntax.py draft && mkdir -p .vivliostyle/themes/fonts && cp fonts/*.otf .vivliostyle/themes/fonts/",
+    "prebuild": "python3 tools/kumihan-kit/check_ruby_syntax.py draft && rm -rf .vivliostyle/themes/fonts && mkdir -p .vivliostyle/themes/fonts && cp fonts/*.otf .vivliostyle/themes/fonts/",
     "build": "vivliostyle build",
-    "postbuild": "python3 tools/kumihan-kit/epub_split_selectors.py {{SLUG}}.epub && python3 tools/kumihan-kit/epub_resolve_css_vars.py {{SLUG}}.epub && python3 tools/kumihan-kit/epub_physical_props.py {{SLUG}}.epub {{WRITING_MODE_ARGS}} && python3 tools/kumihan-kit/epub_ascii_names.py {{SLUG}}.epub && python3 tools/kumihan-kit/epub_subset_fonts.py {{SLUG}}.epub && python3 tools/kumihan-kit/epub_toc_plain.py {{SLUG}}.epub",
+    "postbuild": "python3 tools/kumihan-kit/epub_flatten_css.py {{SLUG}}.epub && python3 tools/kumihan-kit/epub_svg_to_png.py {{SLUG}}.epub && python3 tools/kumihan-kit/epub_strip_forms.py {{SLUG}}.epub && python3 tools/kumihan-kit/epub_split_selectors.py {{SLUG}}.epub && python3 tools/kumihan-kit/epub_resolve_css_vars.py {{SLUG}}.epub && python3 tools/kumihan-kit/epub_physical_props.py {{SLUG}}.epub {{WRITING_MODE_ARGS}} && python3 tools/kumihan-kit/epub_kindle_safe_css.py {{SLUG}}.epub && python3 tools/kumihan-kit/epub_ascii_names.py {{SLUG}}.epub && python3 tools/kumihan-kit/epub_subset_fonts.py {{SLUG}}.epub && python3 tools/kumihan-kit/epub_toc_plain.py {{SLUG}}.epub",
     "prepreview": "npm run prebuild",
     "preview": "vivliostyle preview"
   },

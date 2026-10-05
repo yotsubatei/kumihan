@@ -4,7 +4,12 @@
 読みが語の後ろに続いて表示される（例「組版くみはん」）為、目次では読みを外し、
 親文字だけにする。紙の本の目次は CSS（nav#toc rt { display: none }）で隠す。
 
-使い方: python3 tools/epub_toc_plain.py <EPUBファイル>
+あわせて、ランドマーク（nav epub:type="landmarks"）の目次へのリンク「toc.xhtml#toc」を、
+「toc.xhtml」にする。Kindleの変換は nav の要素を取り除く為、id="toc" が無くなり、
+Kindle Previewer は「ハイパーリンクは解決されていません」（W14001）、KDPは「目次に壊れている
+リンクがあります」となった。
+
+使い方: python3 epub_toc_plain.py <EPUBファイル>
 """
 import re
 import sys
@@ -25,6 +30,10 @@ def main():
                     return re.sub(r"<rt>.*?</rt>|<rp>.*?</rp>|</?ruby>", "", m.group(0))
                 new = re.sub(r"<nav.*?</nav>", strip, s, flags=re.S)
                 n += s.count("<rt>") - new.count("<rt>")
+                # ランドマークの、nav の id への目次のリンクは、ファイルへのリンクにする
+                def land(m):
+                    return re.sub(r'href="([^"#]+)#[^"]*"', r'href="\1"', m.group(0))
+                new = re.sub(r'<nav[^>]*epub:type="landmarks".*?</nav>', land, new, flags=re.S)
                 data = new.encode("utf-8")
             # mimetype は圧縮しない（EPUBの決まり）
             comp = zipfile.ZIP_STORED if item.filename == "mimetype" else zipfile.ZIP_DEFLATED

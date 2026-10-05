@@ -19,7 +19,7 @@ Claude Code のプラグイン（`kumihan`）として、本作りの手順を�
 /plugin install kumihan@kumihan-kit
 ```
 
-スキルは頼み方（「本を作りたい」「著者から修正依頼が来ました」「Kindleで縦書きにならない」等）に応じて自動で使われます。共通の知識は `references/`（`kindle.md`：Kindleで崩れる原因と直し方、`japanese-typesetting.md`：日本語組版の要点、`cover.md`：ペーパーバックとKindleの表紙の作り方）にあります。
+スキルは頼み方（「本を作りたい」「著者から修正依頼が来ました」「Kindleで縦書きにならない」等）に応じて自動で使われます。共通の知識は `references/`（`kindle.md`：Kindleで崩れる原因と直し方、`japanese-typesetting.md`：日本語組版の要点、`cover.md`：ペーパーバックとKindleの表紙の作り方、`kdp-upload.md`：KDPへの入稿でつまずく所と切り分け方）にあります。
 
 ## 道具
 
@@ -38,6 +38,10 @@ Claude Code のプラグイン（`kumihan`）として、本作りの手順を�
 | `scripts/epub_toc_plain.py` | EPUBのナビゲーション目次から、見出しに振ったルビの読みを外す。Kindleの目次の一覧で「組版くみはん」のように読みが続いて出るのを防ぐ |
 | `scripts/table_nowrap.py` | 原稿の表で、中身がすべて短い列（番号・章等）のセルを `<span class="nw">` で囲み、折り返さないようにする。狭い列で「第／16／章」のように1文字ずつ縦に並ぶのを防ぐ（CSSの `.nw { white-space: nowrap }` と組で使う） |
 | `scripts/add_ruby.py` | 原稿の読みにくい語に、章ごとの初出だけルビを振る。出版・組版・校正の用語を既定で持ち、本ごとの語は TSV で足せる。コード・HTMLの属性・既にあるルビには振らない |
+| `scripts/epub_kindle_safe_css.py` | EPUBのCSSから、書字方向の解除（`writing-mode: unset` 等）と段組（`columns` 等）の指定を外す。Vivliostyle のテーマのこれらの指定が、KDPの「Kindle 変換で内部エラー」の原因だった。CSS変数の解決の後に実行する |
+| `scripts/epub_flatten_css.py` | テーマのCSS（node_modules の @import の連なり）を1つのCSSにまとめてEPUBの直下に置き、ZIPのフォルダの項目を除く。KDPの「内部エラー」対策。後処理の最初に実行する |
+| `scripts/epub_svg_to_png.py` | EPUBの中のSVGの画像をPNGにし、参照を書き換える（rsvg-convert）。KDPの「内部エラー」対策 |
+| `scripts/epub_strip_forms.py` | EPUBの本文のフォームの部品（チェックリストの `<input type="checkbox">` 等）を文字（☐）にする。KDPの「HTMLファイルをKindleフォーマットに変換できませんでした」対策 |
 | `scripts/epub_ascii_names.py` | EPUBの中の日本語のファイル名と、manifest のIDを英数字にする。KDPのサーバーの変換が、日本語のファイル名・IDで失敗する（プレビューで変換エラー、保存できない）のを防ぐ |
 | `scripts/font_add_vertical_metrics.py` | 縦書きの字の位置の情報（vhea・vmtx）が無い書体（外字の書体等）に、それを足した複製を作る。Kindleで外字が縦書きの枠の上に寄るのを防ぐ |
 | `scripts/check_ruby_syntax.py` | 原稿のルビ（`{漢字\|よみ}`）が変換されない書き方（生HTMLの段落の中、見出しの直後、二重ルビ）になっていないかを検査する。ビルドの前処理に入れる |
