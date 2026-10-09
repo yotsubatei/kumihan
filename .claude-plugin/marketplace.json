@@ -2,7 +2,7 @@
   "name": "kumihan-kit",
   "description": "日本語の本をAI（Claude Code）とVivliostyleで作る為のプラグイン",
   "owner": {
-    "name": "亖葉"
+    "name": "四葉"
   },
   "plugins": [
     {
