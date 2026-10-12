@@ -47,8 +47,8 @@ Pythonの追加の部品（PyMuPDF・fontTools・python-docx 等）は、シス�
   package.json            ← assets/package.json
   vivliostyle.config.js   ← assets/vivliostyle.config.js
   custom.css              ← assets/custom-yoko.css か assets/custom-tate.css
-  AGENTS.md               ← assets/AGENTS.md（この本での決まり事。以降のAIの作業の拠り所）
-  CLAUDE.md               ← assets/CLAUDE.md（AGENTS.md を読み込む一行だけ。Claude Code は CLAUDE.md を読む為）
+  CLAUDE.md               ← assets/CLAUDE.md（この本での決まり事。以降のAIの作業の拠り所）
+  AGENTS.md               ← assets/AGENTS.md（Codex など、AGENTS.md を読むAIを CLAUDE.md へ案内する）
   .gitignore              ← assets/gitignore
   draft/                  ← 原稿（VFM）。assets/draft/ の見本から始める
   fonts/                  ← 書体（下記）
@@ -67,7 +67,7 @@ Pythonの追加の部品（PyMuPDF・fontTools・python-docx 等）は、シス�
 - `{{THEME}}` 縦書きは `@vivliostyle/theme-bunko@2.0.2`、横書きは `@vivliostyle/theme-techbook@2.0.2`
 - `{{WRITING_MODE_ARGS}}` 縦書きは `--writing-mode vertical-rl --horizontal figure`、横書きは `--writing-mode horizontal-tb`
 - `{{FONT_SIZE}}` 本文の文字サイズ（例 `10pt`）
-- `{{DIRECTION}}` `縦書き` か `横書き`（AGENTS.md の説明文用）
+- `{{DIRECTION}}` `縦書き` か `横書き`（CLAUDE.md の説明文用。`{{TITLE}}` は AGENTS.md にもある）
 
 版は固定する（`@vivliostyle/cli` 11.2.0、テーマも版を指定）。版が上がると組版の結果（改行位置・ページ数）が変わり、著者の確認済みのページがずれる為。theme-techbook 3.0.0 は CLI 11.2.0 で読み込めなかった。上げる時は、新旧のPDFを見比べてから。
 
@@ -121,6 +121,6 @@ npm run build
 - 書体は `fonts/` に置き、前処理で `.vivliostyle/themes/fonts/` にコピーしてから参照する（Vivliostyle CLI がEPUBに同梱するのはテーマのフォルダの中の為）。
 - 縦書きの本は、`html` に `writing-mode` と `-epub-writing-mode` の**両方**を書く（雛形にある）。片方だとKindleで横書きになる。
 - 縦書きでは、上下左右の向きの言葉が入れ替わる（`margin-block-start` は右、`text-align` は天地の揃え）。`SKILL_DIR/references/japanese-typesetting.md` を参照。
-- 原稿の記法（ルビ・圏点・縦中横・改ページ）は、最初に決めて `AGENTS.md` に書く。途中で変えると、原稿全体を書き換える事になる。
+- 原稿の記法（ルビ・圏点・縦中横・改ページ）は、最初に決めて `CLAUDE.md` に書く。途中で変えると、原稿全体を書き換える事になる。
 - 表の中にルビを振る時は `{漢字|よみ}` ではなく `<ruby>` で書く（縦棒が表の列の区切りとぶつかる）。表を足したら `table_nowrap.py` を通す。
 - 表紙は、本文のページ数が固まってから仕上げる（背の幅がページ数で変わる）。作り方は `SKILL_DIR/references/cover.md`。

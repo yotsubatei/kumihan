@@ -10,7 +10,7 @@ Vivliostyleで作る日本語の本を、Kindle等の電子書籍リーダーで
 | `kumihan-revision` | 著者の修正依頼を反映し、検査・新旧の見比べ・日付付きの確認版の作成まで行う |
 | `kumihan-kindle` | EPUBをKindleで崩れないように整え、Kindle Previewer で確かめ、テスターへの配布とKDPへの提出を準備する |
 
-スキルは頼み方（「本を作りたい」「著者から修正依頼が来ました」「Kindleで縦書きにならない」等）に応じて自動で使われます。本ごとの決まりは、本のフォルダの `AGENTS.md` に書きます（`kumihan-setup` が作ります。Claude Code 向けの `CLAUDE.md` は、`AGENTS.md` を読み込む一行だけです）。
+スキルは頼み方（「本を作りたい」「著者から修正依頼が来ました」「Kindleで縦書きにならない」等）に応じて自動で使われます。本ごとの決まりは、本のフォルダの `CLAUDE.md` に書きます（`kumihan-setup` が作ります）。Codex などは `AGENTS.md` を読むので、`CLAUDE.md` へ案内する短い `AGENTS.md` も一緒に作ります。
 
 ### 導入
 
