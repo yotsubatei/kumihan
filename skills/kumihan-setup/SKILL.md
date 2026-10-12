@@ -1,6 +1,6 @@
 ---
-name: setup
-description: 日本語の本をVivliostyleで組版するプロジェクトを、ゼロから立ち上げる。書名・著者・縦書きか横書きか・判型を聞き、原稿フォルダ・設定・CSS・書体・Kindle向けの後処理・検査を揃え、PDF（紙の本）とEPUB（電子書籍）が1回のビルドでできる状態にする。「本を作りたい」「原稿を本にしたい」「Vivliostyleで本を組みたい」「KindleやKDPで出版したい本の準備」「縦書きの本」「同人誌・小説・技術書を組版したい」など、新しく本を作り始める時は、Vivliostyleという言葉が出なくても使う。既にある本の修正は revision、電子書籍の確認は kindle を使う。
+name: kumihan-setup
+description: 日本語の本をVivliostyleで組版するプロジェクトを、ゼロから立ち上げる。書名・著者・縦書きか横書きか・判型を聞き、原稿フォルダ・設定・CSS・書体・Kindle向けの後処理・検査を揃え、PDF（紙の本）とEPUB（電子書籍）が1回のビルドでできる状態にする。「本を作りたい」「原稿を本にしたい」「Vivliostyleで本を組みたい」「KindleやKDPで出版したい本の準備」「縦書きの本」「同人誌・小説・技術書を組版したい」など、新しく本を作り始める時は、Vivliostyleという言葉が出なくても使う。既にある本の修正は kumihan-revision、電子書籍の確認は kumihan-kindle を使う。
 ---
 
 # 本の立ち上げ
@@ -8,8 +8,7 @@ description: 日本語の本をVivliostyleで組版するプロジェクトを�
 著者の原稿から、紙の本（PDF）と電子書籍（EPUB）を同じ原稿・同じCSSで作るプロジェクトを用意する。
 使う人はコマンドを打たない前提で、道具の導入からビルド・確認までAIが行い、結果を見せて判断だけを仰ぐ。
 
-このスキルのフォルダ（読み込み時に表示される Base directory）を `SKILL_DIR` と呼ぶ。
-共通の道具は `SKILL_DIR/../../scripts/`、共通の知識は `SKILL_DIR/../../references/` にある。
+このスキルのフォルダ（この SKILL.md があるフォルダ）を `SKILL_DIR` と呼ぶ。共通の道具は `SKILL_DIR/scripts/`、共通の知識は `SKILL_DIR/references/` にある（3つのスキルに同じ物が入っている）。
 
 ## 1. 道具を確かめる
 
@@ -48,16 +47,17 @@ Pythonの追加の部品（PyMuPDF・fontTools・python-docx 等）は、シス�
   package.json            ← assets/package.json
   vivliostyle.config.js   ← assets/vivliostyle.config.js
   custom.css              ← assets/custom-yoko.css か assets/custom-tate.css
-  CLAUDE.md               ← assets/CLAUDE.md（この本での決まり事。以降のAIの作業の拠り所）
+  AGENTS.md               ← assets/AGENTS.md（この本での決まり事。以降のAIの作業の拠り所）
+  CLAUDE.md               ← assets/CLAUDE.md（AGENTS.md を読み込む一行だけ。Claude Code は CLAUDE.md を読む為）
   .gitignore              ← assets/gitignore
   draft/                  ← 原稿（VFM）。assets/draft/ の見本から始める
   fonts/                  ← 書体（下記）
   received/               ← 著者から届いた原稿・修正依頼を、届いた日付ごとにそのまま保存
   releases/               ← 著者に渡す確認版を、日付ごとに保存
-  tools/kumihan-kit/      ← SKILL_DIR/../../scripts/ をコピー
+  tools/kumihan-kit/      ← SKILL_DIR/scripts/ をコピー
 ```
 
-`tools/kumihan-kit/` には、プラグインのスクリプトを**コピーして**本に含める。ビルドの度にプラグインの場所を探さずに済み、後でプラグインが更新されても、この本の出力が勝手に変わらない為。更新を取り込む時は、コピーし直してから出力を見比べる。
+`tools/kumihan-kit/` には、スキルのスクリプトを**コピーして**本に含める。ビルドの度にスキルの場所を探さずに済み、どのAIで作業しても同じ道具が使え、後でスキルが更新されても、この本の出力が勝手に変わらない為。更新を取り込む時は、コピーし直してから出力を見比べる。
 
 雛形の置き換え：
 
@@ -67,7 +67,7 @@ Pythonの追加の部品（PyMuPDF・fontTools・python-docx 等）は、シス�
 - `{{THEME}}` 縦書きは `@vivliostyle/theme-bunko@2.0.2`、横書きは `@vivliostyle/theme-techbook@2.0.2`
 - `{{WRITING_MODE_ARGS}}` 縦書きは `--writing-mode vertical-rl --horizontal figure`、横書きは `--writing-mode horizontal-tb`
 - `{{FONT_SIZE}}` 本文の文字サイズ（例 `10pt`）
-- `{{DIRECTION}}` `縦書き` か `横書き`（CLAUDE.md の説明文用）
+- `{{DIRECTION}}` `縦書き` か `横書き`（AGENTS.md の説明文用）
 
 版は固定する（`@vivliostyle/cli` 11.2.0、テーマも版を指定）。版が上がると組版の結果（改行位置・ページ数）が変わり、著者の確認済みのページがずれる為。theme-techbook 3.0.0 は CLI 11.2.0 で読み込めなかった。上げる時は、新旧のPDFを見比べてから。
 
@@ -92,7 +92,7 @@ npm install
 npm run build
 ```
 
-`npm run build` は、前処理（ルビの書き方の検査、書体のコピー）→ PDF・EPUBの書き出し → 後処理（EPUBをKindle向けに整える）を続けて行う。後処理の中身は `SKILL_DIR/../../references/kindle.md` を参照。
+`npm run build` は、前処理（ルビの書き方の検査、書体のコピー）→ PDF・EPUBの書き出し → 後処理（EPUBをKindle向けに整える）を続けて行う。後処理の中身は `SKILL_DIR/references/kindle.md` を参照。
 
 確かめる事：
 
@@ -111,8 +111,8 @@ npm run build
 
 - 「この原稿（Wordのファイル）を第1章として取り込んで」
 - 「ルビは『漢字（よみ）』の形で書いてあるので、ルビにして」
-- 「著者から修正依頼が来ました」→ revision スキル
-- 「Kindleでの見え方を確かめたい」→ kindle スキル
+- 「著者から修正依頼が来ました」→ kumihan-revision スキル
+- 「Kindleでの見え方を確かめたい」→ kumihan-kindle スキル
 
 ## 立ち上げでつまずきやすい点
 
@@ -120,7 +120,7 @@ npm run build
 - **書体の名前は、パソコンに入っている書体と被らない独自の名前で登録する**（雛形は `KMNotoSerifJP`）。同じ名前だと、手元ではパソコンの書体で表示され、埋め込みの失敗に気づけない。
 - 書体は `fonts/` に置き、前処理で `.vivliostyle/themes/fonts/` にコピーしてから参照する（Vivliostyle CLI がEPUBに同梱するのはテーマのフォルダの中の為）。
 - 縦書きの本は、`html` に `writing-mode` と `-epub-writing-mode` の**両方**を書く（雛形にある）。片方だとKindleで横書きになる。
-- 縦書きでは、上下左右の向きの言葉が入れ替わる（`margin-block-start` は右、`text-align` は天地の揃え）。`SKILL_DIR/../../references/japanese-typesetting.md` を参照。
-- 原稿の記法（ルビ・圏点・縦中横・改ページ）は、最初に決めて `CLAUDE.md` に書く。途中で変えると、原稿全体を書き換える事になる。
+- 縦書きでは、上下左右の向きの言葉が入れ替わる（`margin-block-start` は右、`text-align` は天地の揃え）。`SKILL_DIR/references/japanese-typesetting.md` を参照。
+- 原稿の記法（ルビ・圏点・縦中横・改ページ）は、最初に決めて `AGENTS.md` に書く。途中で変えると、原稿全体を書き換える事になる。
 - 表の中にルビを振る時は `{漢字|よみ}` ではなく `<ruby>` で書く（縦棒が表の列の区切りとぶつかる）。表を足したら `table_nowrap.py` を通す。
-- 表紙は、本文のページ数が固まってから仕上げる（背の幅がページ数で変わる）。作り方は `SKILL_DIR/../../references/cover.md`。
+- 表紙は、本文のページ数が固まってから仕上げる（背の幅がページ数で変わる）。作り方は `SKILL_DIR/references/cover.md`。

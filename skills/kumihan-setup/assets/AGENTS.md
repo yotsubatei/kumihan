@@ -1,3 +1,4 @@
+<!-- この本での決まり事。Codex などは AGENTS.md を、Claude Code は CLAUDE.md（この AGENTS.md を読み込む）を読む -->
 # {{TITLE}}
 
 {{AUTHOR}} 著。Vivliostyle で組版し、紙の本（PDF）と電子書籍（EPUB）を、同じ原稿・同じCSSから作る。{{DIRECTION}}・{{SIZE}}・本文{{FONT_SIZE}}。
@@ -30,4 +31,4 @@
 - 縦書きでは `*-block-*` が左右、`*-inline-*` が天地、`text-align` が天地の揃えになる。
 
 ## 道具
-- `tools/kumihan-kit/` は kumihan プラグインのスクリプトのコピー。更新を取り込む時は、コピーし直してから新旧の出力を見比べる。
+- `tools/kumihan-kit/` は kumihan のスキルのスクリプトのコピー。更新を取り込む時は、コピーし直してから新旧の出力を見比べる。

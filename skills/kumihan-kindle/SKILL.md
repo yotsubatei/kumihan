@@ -1,5 +1,5 @@
 ---
-name: kindle
+name: kumihan-kindle
 description: Vivliostyleで作ったEPUBを、Kindle（KDP）で崩れずに読めるように整え、Kindle Previewerで確かめ、テスターに配り、KDPに出せる状態にする。「Kindleで縦書きにならない」「Kindleだと書式が崩れる・字下げが消える・余白が無い」「箇条書きの点が二重に出る」「Kindle Previewerで確認したい」「KPFを作って」「表紙が出ない」「EPUBが大きすぎる」「Kindle版を他の人に見てもらいたい」「KDPに出したい」と言われた時に使う。EPUBの見た目の問題なら、Kindleと明言されなくても、電子書籍の確認として使う。
 ---
 
@@ -8,7 +8,7 @@ description: Vivliostyleで作ったEPUBを、Kindle（KDP）で崩れずに読�
 Vivliostyle が作るEPUBは、ブラウザやVivliostyleでは正しく表示されるが、Kindleの変換エンジンは CSS の一部を**黙って無視する**。縦書きが横書きになる、字下げや余白が消える、と崩れても警告は出ない。
 そこで、(1) 後処理でKindleが解釈できる書き方に置き換え、(2) 検査で残りを見つけ、(3) Kindle Previewer で実際の表示を確かめる。
 
-このスキルのフォルダ（読み込み時に表示される Base directory）を `SKILL_DIR` と呼ぶ。道具は `SKILL_DIR/../../scripts/`（本に `tools/kumihan-kit/` としてコピーしてあれば、そちらを使う）。Kindleが解釈しない書き方と直し方の詳細は `SKILL_DIR/../../references/kindle.md` にある。崩れの原因を探す時は先に読む。
+このスキルのフォルダ（この SKILL.md があるフォルダ）を `SKILL_DIR` と呼ぶ。共通の道具は `SKILL_DIR/scripts/`、共通の知識は `SKILL_DIR/references/` にある（3つのスキルに同じ物が入っている）。本に `tools/kumihan-kit/` として道具がコピーしてあれば、そちらを使う。Kindleが解釈しない書き方と直し方の詳細は `SKILL_DIR/references/kindle.md` にある。崩れの原因を探す時は先に読む。
 
 ## 1. 後処理が入っているか確かめる
 
@@ -49,7 +49,7 @@ Kindle Previewer 3/4（Amazonの無料のアプリ。Mac・Windows）で、KDP�
 - `--showpreview` を付けると画面で開く。タブレット・スマートフォン・Kindle端末の表示を切り替え、文字サイズを変えて、次を見る：縦書きか、段落の字下げ、見出しの余白、箇条書きの点、ルビ、図版の大きさ、目次から各章へ飛べるか、表紙。
 - 使う人にも、画面を開いて見てもらう（見るべき点を上の箇条で伝える）。
 
-崩れを見つけたら、`references/kindle.md` で症状から原因を引き、直して、再ビルド→検査→Previewer をやり直す。直した時は、PDF（紙の本）の見た目が変わっていない事も確かめる（`pdf_diff_pages.py` で前のPDFと比べ、変わったページが0）。
+崩れを見つけたら、`SKILL_DIR/references/kindle.md` で症状から原因を引き、直して、再ビルド→検査→Previewer をやり直す。直した時は、PDF（紙の本）の見た目が変わっていない事も確かめる（`pdf_diff_pages.py` で前のPDFと比べ、変わったページが0）。
 
 ## 4. 目次
 
@@ -71,10 +71,10 @@ Kindleには、本文の目次ページとは別に、メニューから開く�
 ## 6. KDPに出す前に
 
 - EPUBのサイズ：Kindleは配信の料金がファイルサイズで決まる（ロイヤリティ70%の場合）。書体を埋め込むと数十MBになる事があるので、`epub_subset_fonts.py` で絞り込む。**書体のライセンスが埋め込み・改変（サブセット化）を許しているか**を確かめる。
-- KDPに上げる前と、KDPでエラーが出た時は `SKILL_DIR/../../references/kdp-upload.md` を読む（症状から原因と直す道具、上げる前の確認、二分探索での切り分け）。
+- KDPに上げる前と、KDPでエラーが出た時は `SKILL_DIR/references/kdp-upload.md` を読む（症状から原因と直す道具、上げる前の確認、二分探索での切り分け）。
 - KDPで「内部エラー」が出る時：まず `epub_kindle_safe_css.py` が後処理に入っているか（テーマの書字方向の解除・段組の指定が原因だった）。それでも出る時は、KDPに試験用の下書きを作り、書式・本文を半分ずつ外したEPUBを上げて二分探索する。
 - KDPに上げてプレビューが変換エラーになる時：EPUBの中のファイル名・IDに日本語が残っていないか（`epub_ascii_names.py` を後処理に入れる）、KDPのページの言語が「日本語」か、KPFではなくEPUBを上げているかを確かめる。
 - 外字（著者が作った書体の字）を使う本は、Kindle Previewer で縦書きの位置を見る。枠の上に寄るなら `font_add_vertical_metrics.py`。
-- 表紙：KDPには、EPUBの中の表紙とは別に、表紙画像（JPEG、推奨 1600×2560 ピクセル以上）を登録する。ペーパーバックの表紙一式（裏表紙・背・表表紙）と合わせた作り方は `SKILL_DIR/../../references/cover.md`。
+- 表紙：KDPには、EPUBの中の表紙とは別に、表紙画像（JPEG、推奨 1600×2560 ピクセル以上）を登録する。ペーパーバックの表紙一式（裏表紙・背・表表紙）と合わせた作り方は `SKILL_DIR/references/cover.md`。
 - ISBN：Kindle（電子書籍）には不要。
 - 書誌情報（書名・著者名・説明・キーワード・カテゴリ）は、使う人と決める。価格は使う人の判断。

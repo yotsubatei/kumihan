@@ -1,25 +1,39 @@
 # kumihan-kit
 
-Vivliostyleで作る日本語の本を、Kindle等の電子書籍リーダーでも崩れずに読めるようにする為の道具集です。縦書き・横書きの両方に使えます。
+Vivliostyleで作る日本語の本を、Kindle等の電子書籍リーダーでも崩れずに読めるようにする為の道具集です。縦書き・横書きの両方に使えます。本作りの手順をまとめたスキルも同梱しています。Claude Code、Codex など、Agent Skills の形式を読むAIで使えます。
 
-Claude Code のプラグイン（`kumihan`）として、本作りの手順をまとめたスキルも同梱しています。
-
-## スキル（Claude Code プラグイン）
+## スキル
 
 | スキル | 使う場面 |
 | --- | --- |
-| `kumihan:setup` | 新しい本のプロジェクトを立ち上げる（設定・CSS・書体・後処理・検査を揃え、PDFとEPUBができる状態にする） |
-| `kumihan:revision` | 著者の修正依頼を反映し、検査・新旧の見比べ・日付付きの確認版の作成まで行う |
-| `kumihan:kindle` | EPUBをKindleで崩れないように整え、Kindle Previewer で確かめ、テスターへの配布とKDPへの提出を準備する |
+| `kumihan-setup` | 新しい本のプロジェクトを立ち上げる（設定・CSS・書体・後処理・検査を揃え、PDFとEPUBができる状態にする） |
+| `kumihan-revision` | 著者の修正依頼を反映し、検査・新旧の見比べ・日付付きの確認版の作成まで行う |
+| `kumihan-kindle` | EPUBをKindleで崩れないように整え、Kindle Previewer で確かめ、テスターへの配布とKDPへの提出を準備する |
 
-導入（Claude Code の中で）:
+スキルは頼み方（「本を作りたい」「著者から修正依頼が来ました」「Kindleで縦書きにならない」等）に応じて自動で使われます。本ごとの決まりは、本のフォルダの `AGENTS.md` に書きます（`kumihan-setup` が作ります。Claude Code 向けの `CLAUDE.md` は、`AGENTS.md` を読み込む一行だけです）。
+
+### 導入
+
+どれか一つの方法で入れてください（二つ入れると、同じスキルが二重に入ります）。
+
+Claude Code（プラグインとして。Claude Code の中で）:
 
 ```
 /plugin marketplace add yotsubatei/kumihan
 /plugin install kumihan@kumihan-kit
 ```
 
-スキルは頼み方（「本を作りたい」「著者から修正依頼が来ました」「Kindleで縦書きにならない」等）に応じて自動で使われます。共通の知識は `references/`（`kindle.md`：Kindleで崩れる原因と直し方、`japanese-typesetting.md`：日本語組版の要点、`cover.md`：ペーパーバックとKindleの表紙の作り方、`kdp-upload.md`：KDPへの入稿でつまずく所と切り分け方）にあります。
+Claude Code では `kumihan:kumihan-setup` のように、頭に `kumihan:` が付いた名前で表示されます。
+
+Codex など、ほかのAI（ターミナルで）:
+
+```sh
+npx skills@latest add yotsubatei/kumihan
+```
+
+どのAIに入れるかを尋ねられます。すべてのプロジェクトで使う時は `-g` を付けます。手で入れる場合は、`skills/` の中の3つのフォルダを、AIがスキルを読むフォルダ（Codex なら `~/.codex/skills/` か、プロジェクトの `.agents/skills/`）にコピーします。
+
+各スキルのフォルダには、道具（`scripts/`）と知識（`references/`）の写しが入っていて、フォルダ単体で動きます。知識は `kindle.md`（Kindleで崩れる原因と直し方）、`japanese-typesetting.md`（日本語組版の要点）、`cover.md`（ペーパーバックとKindleの表紙の作り方）、`kdp-upload.md`（KDPへの入稿でつまずく所と切り分け方）です。
 
 ## 道具
 
