@@ -61,7 +61,7 @@ Kindleには、本文の目次ページとは別に、メニューから開く�
 
 ## 5. KPF とテスターへの配布
 
-- **KPF**：Kindle Previewer で変換したファイル（`.kpf`）。KDPに EPUB の代わりに出せる。中身は KDP 側の変換と同じ。
+- **KPF**：Kindle Previewer で変換したファイル（`.kpf`）。見え方を確かめる為の物。KDP の KPF の入稿口は Kindle Create で作った物を想定している為、KDPには EPUB を上げる（KPF を上げると、プレビューで変換エラーになった事がある）。
 - **テスターに見てもらう**：KPFは端末に入れられない。EPUBを「Send to Kindle」で送ってもらうのが簡単。
   - iPhone・Android：Kindleアプリを入れ、Send to Kindle（Amazonのウェブページ、またはメール添付で各自の Send to Kindle アドレスへ）でEPUBを送る。アプリのライブラリに届く。
   - Windows：Send to Kindle for PC（アプリ）か、ウェブページ。Kindle for PC で読める。
